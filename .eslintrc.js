@@ -6,7 +6,7 @@ module.exports = {
     "es6": true
   },
   root: true,
-  extends: "eslint:recommended",
+  extends : "eslint:recommended",
   plugins: ["promise"],
   rules: {
     "no-console": "off",

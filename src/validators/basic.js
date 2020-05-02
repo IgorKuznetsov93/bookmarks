@@ -26,6 +26,7 @@ validate.validators.array = function(value, options) {
   }
 };
 
+
 export const offsetConstraints = {
   numericality: {
     onlyInteger: true,
