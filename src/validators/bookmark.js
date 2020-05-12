@@ -18,12 +18,13 @@ validate.validators.isDate = function (value) {
 
 validate.validators.domain = function (value) {
   if (value) {
+    const URL = value.toLowerCase();
     const blockedDomains = ['yahoo.com', 'socket.io'];
-    const domain = value.split(/\/+/)[1];
-    if (blockedDomains.indexOf(domain) !== -1) {
+    const isBlockedDomain  =  blockedDomains.find((_) => URL.includes(_));
+    if (isBlockedDomain) {
       return {
         code: 'BOOKMARKS_BLOCKED_DOMAIN',
-        description: `${domain} banned`,
+        description: `${isBlockedDomain} banned`,
       };
     }
   }
@@ -72,7 +73,7 @@ export const sortDirConstraints = {
 };
 
 export const linkConstraints = {
-  presence: true,
+  presence: { allowEmpty: false },
   url: {
     message: { code: 'BOOKMARKS_INVALID_LINK', description: 'Invalid link' },
   },
