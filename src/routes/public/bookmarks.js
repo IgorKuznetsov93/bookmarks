@@ -10,6 +10,7 @@ import {
   favoritesConstraints,
 } from '../../validators/bookmark';
 import { fillingWhereParameterForDate } from '../../utils/query';
+import { getOpenGraphMetaProperties, getWhoIsInformation } from '../../utils/request';
 
 
 const router = Router();
@@ -128,6 +129,19 @@ router.delete('/:guid', async (req, res) => {
     res.status(200).json({ message: 'delete successfully' });
   } catch (error) {
     res.status(500).json({ errors: { backend: ["Can't delete bookmark"] } });
+  }
+});
+
+router.get('/:guid', async (req, res) => {
+  try {
+    const bookmark = await models.bookmark.findByPk(req.params.guid);
+    if (!bookmark) {
+      res.status(404).json({ errors: { backend: ['Not found'] } });
+    }
+    const [og, whoIsInfo] = await Promise.all([getOpenGraphMetaProperties(bookmark.link), getWhoIsInformation(bookmark.link)]);
+    res.status(200).json({ og, whoIsInfo });
+  } catch (error) {
+    res.status(500).json({ errors: { backend: ["Can't get bookmark", error.message] } });
   }
 });
 
