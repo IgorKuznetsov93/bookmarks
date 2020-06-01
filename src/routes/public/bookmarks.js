@@ -60,13 +60,13 @@ router.get('/', async (req, res) => {
           queryParams.where = { [filter]: filterValueBoolean };
         }
       }
-      const bookmarks = await models.bookmark.findAll(queryParams);
+      const queryParamsWithoutAttributes = Object.assign({}, queryParams);
+      queryParamsWithoutAttributes.attributes = [];
+      const [bookmarks, length] = await Promise.all([models.bookmark.findAll(queryParams), models.bookmark.count(queryParamsWithoutAttributes)]);
       bookmarks.forEach((_) => {
         _.createdAt = new Date(_.createdAt).getTime();
         _.favorites = Boolean(_.favorites);
       });
-      queryParams.attributes = [];
-      const length = await models.bookmark.count(queryParams);
       res.json({ length, data: bookmarks });
     }
   } catch (error) {
